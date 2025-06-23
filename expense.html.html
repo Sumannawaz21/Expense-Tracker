@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    input[type="text"], input[type="number"] {
+      width: 70%;
+      padding: 10px;
+      margin: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      padding: 5px 0;
+    }
+    .total {
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .pdf-button {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="expenseReport">
+    <h2>🧾 Simple Expense Tracker</h2>
+    <input type="text" id="expenseName" placeholder="Expense name">
+    <input type="number" id="expenseAmount" placeholder="Amount">
+    <button onclick="addExpense()">Add Expense</button>
+    <ul id="expenseList"></ul>
+    <div class="total">Total Expenses: Rs <span id="total">0</span></div>
+    <div class="pdf-button">
+      <button onclick="downloadPDF()">📄 Download PDF</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    let expenses = [];
+
+    function addExpense() {
+      const name = document.getElementById('expenseName').value.trim();
+      const amount = parseFloat(document.getElementById('expenseAmount').value);
+      if (name && amount && amount > 0) {
+        expenses.push({ name, amount });
+        document.getElementById('expenseName').value = '';
+        document.getElementById('expenseAmount').value = '';
+        updateDisplay();
+      }
+    }
+
+    function updateDisplay() {
+      const list = document.getElementById('expenseList');
+      const total = expenses.reduce((sum, e) => sum + e.amount, 0);
+      list.innerHTML = expenses.map(e => `<li>➖ ${e.name}: Rs ${e.amount}</li>`).join('');
+      document.getElementById('total').textContent = total;
+    }
+
+    function downloadPDF() {
+      const element = document.getElementById("expenseReport");
+      html2pdf().from(element).save("Simple_Expense_Report.pdf");
+    }
+  </script>
+</body>
+</html>
+
